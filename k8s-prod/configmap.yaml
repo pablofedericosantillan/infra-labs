@@ -1,0 +1,11 @@
+# Stores non-secret production runtime configuration.
+# Use Kubernetes Secrets or AWS Secrets Manager for sensitive values.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: woki-brain-config
+  namespace: k8s-prod
+data:
+  NODE_ENV: "production"
+  LOG_LEVEL: "info"
+  MAX_NEARBY_TABLES: "2"

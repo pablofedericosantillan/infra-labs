@@ -1,0 +1,48 @@
+# Runs the production API pods in EKS.
+# Replace the image with your ECR image before applying this manifest.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: woki-brain
+  namespace: k8s-prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: woki-brain
+  template:
+    metadata:
+      labels:
+        app: woki-brain
+    spec:
+      containers:
+        - name: woki-brain
+          image: 123456789012.dkr.ecr.us-east-1.amazonaws.com/woki-brain:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          envFrom:
+            # Loads non-secret production values from the ConfigMap.
+            - configMapRef:
+                name: woki-brain-config
+          readinessProbe:
+            # Keeps the pod out of traffic until the API is ready.
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            # Restarts the pod if the API stops responding.
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 512Mi

@@ -1,0 +1,15 @@
+# Exposes the pods inside the Kubernetes cluster.
+# The Ingress sends traffic to this Service.
+apiVersion: v1
+kind: Service
+metadata:
+  name: woki-brain
+  namespace: k8s-local
+spec:
+  type: ClusterIP
+  selector:
+    app: woki-brain
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000

@@ -1,0 +1,48 @@
+# Runs the woki-brain API as replicated pods.
+# Replace the image with your own Docker image after publishing it.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: woki-brain
+  namespace: k8s-local
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: woki-brain
+  template:
+    metadata:
+      labels:
+        app: woki-brain
+    spec:
+      containers:
+        - name: woki-brain
+          image: pablofedericosantillan/woki-brain:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          envFrom:
+            # Loads NODE_ENV, LOG_LEVEL, and MAX_NEARBY_TABLES from the ConfigMap.
+            - configMapRef:
+                name: woki-brain-config
+          readinessProbe:
+            # Kubernetes sends traffic only after this probe succeeds.
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            # Kubernetes restarts the container if the API becomes unhealthy.
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi

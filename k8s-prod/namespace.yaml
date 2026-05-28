@@ -1,0 +1,5 @@
+# Creates a separated namespace for production resources.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: k8s-prod

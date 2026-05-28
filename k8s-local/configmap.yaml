@@ -1,0 +1,11 @@
+# Stores non-secret configuration for the local API deployment.
+# Do not put passwords or tokens here. Use Secret objects for sensitive values.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: woki-brain-config
+  namespace: k8s-local
+data:
+  NODE_ENV: "development"
+  LOG_LEVEL: "info"
+  MAX_NEARBY_TABLES: "2"

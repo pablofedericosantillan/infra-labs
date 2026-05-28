@@ -1,0 +1,5 @@
+# Creates a separated namespace so local Kubernetes resources stay organized.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: k8s-local

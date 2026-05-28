@@ -1,0 +1,26 @@
+# Creates an AWS Application Load Balancer for the API.
+# Requires AWS Load Balancer Controller installed in the EKS cluster.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: woki-brain
+  namespace: k8s-prod
+  annotations:
+    # Creates an internet-facing ALB. Use "internal" for private services.
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    # Sends traffic directly to pod IPs.
+    alb.ingress.kubernetes.io/target-type: ip
+    # Listens on HTTP. Add HTTPS listener and ACM certificate for production domains.
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: woki-brain
+                port:
+                  number: 80

@@ -1,0 +1,14 @@
+# Internal Service used by the AWS ALB Ingress to reach the pods.
+apiVersion: v1
+kind: Service
+metadata:
+  name: woki-brain
+  namespace: k8s-prod
+spec:
+  type: ClusterIP
+  selector:
+    app: woki-brain
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000
