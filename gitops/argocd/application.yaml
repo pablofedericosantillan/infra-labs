@@ -1,0 +1,26 @@
+# Argo CD Application that syncs Kubernetes manifests from this Git repository.
+# It watches the k8s-prod folder and applies those manifests into the cluster.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: woki-brain-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/pablofedericosantillan/infra-labs.git
+    targetRevision: main
+    path: k8s-prod
+  destination:
+    # https://kubernetes.default.svc means the same cluster where Argo CD is installed.
+    server: https://kubernetes.default.svc
+    namespace: k8s-prod
+  syncPolicy:
+    automated:
+      # Deletes Kubernetes resources that were removed from Git.
+      prune: true
+      # Reverts manual cluster changes so the cluster matches Git.
+      selfHeal: true
+    syncOptions:
+      # Creates the target namespace if it does not exist.
+      - CreateNamespace=true

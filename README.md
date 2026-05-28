@@ -1,14 +1,15 @@
-# k8s-labs
+# infra-labs
 
-Kubernetes labs for learning how to run a backend API locally with Minikube and prepare a production-style deployment for AWS EKS.
+Infrastructure labs for learning Kubernetes, AWS, Terraform, and GitOps.
 
-The example application used in this repository is `woki-brain`, a Node.js API.
+The Kubernetes example application used in this repository is `woki-brain`, a Node.js API.
 
 ## Folders
 
 ```text
 k8s-local/  Kubernetes manifests for Minikube
 k8s-prod/   Kubernetes manifests for AWS EKS
+gitops/     Terraform and Argo CD GitOps examples
 ```
 
 ## Goal
@@ -25,13 +26,20 @@ Use the same Kubernetes concepts in both environments:
 
 Local Kubernetes is useful for learning and testing. AWS EKS adds cloud infrastructure such as load balancers, IAM, ECR, VPC networking, and production monitoring.
 
+The GitOps folder adds infrastructure-as-code and continuous delivery examples:
+
+- Terraform creates AWS infrastructure.
+- Argo CD syncs Kubernetes manifests from Git into a cluster.
+
 ## Recommended Learning Path
 
 1. Run the local version with Minikube.
 2. Understand each manifest.
 3. Build and publish a Docker image.
-4. Replace the image in the production manifests.
-5. Deploy to AWS EKS.
+4. Review the Terraform EC2 example.
+5. Review the Argo CD application example.
+6. Replace the image in the production manifests.
+7. Deploy to AWS EKS.
 
 ## Architecture Overview
 
@@ -40,6 +48,8 @@ flowchart LR
   Dev[Developer] --> GitHub[GitHub Repo]
   GitHub --> Image[Docker Image Registry]
   Image --> K8s[Kubernetes Cluster]
+  GitHub --> Argo[Argo CD]
+  Argo --> K8s
   K8s --> Pod[woki-brain Pods]
   User[User or Client] --> Ingress[Ingress / Load Balancer]
   Ingress --> Service[Kubernetes Service]
